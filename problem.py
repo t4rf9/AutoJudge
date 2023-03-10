@@ -1,6 +1,6 @@
 from typing import Dict, Tuple
 import os
-import json
+import toml
 from functools import partial
 from abc import abstractmethod, ABC
 
@@ -151,16 +151,17 @@ class Problem(ABC):
             if self._judge_1_checkpoint(output_file_name, answer_file_name):
                 correct += 1
 
-        return correct, self.checkpoints_number
+        return f"{correct} / {self.checkpoints_number}"
 
     def judge(self):
+        results_file = os.path.join(self.problem_path, f"results.toml")
         if self.student_path is None:
             results = for_each_student(self.assignment_path, self._judge_1_student)
-            results_json = os.path.join(self.problem_path, f"results.json")
         else:
-            results = self._judge_1_student(self.student_path)
-            results_json = os.path.join(
-                self.student_path, f"results_{self.problem_name}.json"
-            )
-        with open(results_json, "w") as f:
-            json.dump(results, f)
+            result_1_student = self._judge_1_student(self.student_path)
+            with open(results_file, "r") as f:
+                results = toml.load(f)
+            results[self.student_path.split("/")[-1]] = result_1_student
+
+        with open(results_file, "w") as f:
+            toml.dump(results, f)
