@@ -9,6 +9,7 @@ class Complex(Problem):
     def __init__(
         self,
         assignment_path: str = "Assignment 1",
+        student_path: str = None,
         checkpoints_number: int = 20,
         generate_checkpoints: bool = True,
         compile: bool = True,
@@ -18,6 +19,7 @@ class Complex(Problem):
         super().__init__(
             assignment_path,
             problem_name="1",
+            student_path=student_path,
             checkpoints_number=checkpoints_number,
             generate_checkpoints=generate_checkpoints,
             compile=compile,
@@ -65,6 +67,7 @@ class Complex(Problem):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
+    parser.add_argument("-s", "--student_path", type=str, default=None)
     parser.add_argument("-g", "--generate_checkpoints", action="store_true")
     parser.add_argument("-c", "--compile", action="store_true")
     parser.add_argument("-r", "--run_checkpoints", action="store_true")
@@ -72,6 +75,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     complex = Complex(
+        student_path=args.student_path,
         generate_checkpoints=args.generate_checkpoints,
         compile=args.compile,
         run_checkpoints=args.run_checkpoints,

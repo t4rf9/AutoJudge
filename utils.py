@@ -5,6 +5,26 @@ from typing import Dict, Tuple
 from functools import partial
 
 
+def switch_encoding(file_path):
+    with open(file_path, "rb") as f:
+        lines_bytes = f.readlines()
+
+    lines_bytes = [
+        line_bytes.expandtabs(4).replace(b"\r\n", b"\n").replace(b"scanf_s", b"scanf")
+        for line_bytes in lines_bytes
+    ]
+
+    try:
+        lines = [line_bytes.decode("utf-8") for line_bytes in lines_bytes]
+        # print(f"{file_path}: utf-8")
+    except UnicodeDecodeError as err:
+        lines = [line_bytes.decode("gb18030") for line_bytes in lines_bytes]
+        # print(f"{file_path}: gb18030")
+
+    with open(file_path, "w") as f:
+        f.writelines(lines)
+
+
 def for_each_student(assignment_path: str, f) -> Dict[str, Tuple[int, int]]:
     students = os.listdir(assignment_path)
     res = {}
