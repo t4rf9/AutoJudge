@@ -135,7 +135,9 @@ class Problem(ABC):
             self._run_checkpoints_for_1_student(self.student_path)
 
     @abstractmethod
-    def _judge_1_checkpoint(output_file_name: str, answer_file_name: str) -> bool:
+    def _judge_1_checkpoint(
+        output_file_name: str, answer_file_name: str
+    ) -> Tuple[int, int]:
         return False
 
     def _judge_1_student(self, student_path: str) -> Tuple[int, int]:
@@ -143,15 +145,21 @@ class Problem(ABC):
         output_path = os.path.join(self.problem_path, os.path.join("outputs", student))
         os.makedirs(output_path, exist_ok=True)
 
-        correct = 0
+        correct, total = 0, 0
+        wrong = []
         for i in range(self.checkpoints_number):
             output_file_name = os.path.join(output_path, f"{i}.out")
             answer_file_name = os.path.join(self.checkpoints_path, f"{i}.ans")
 
-            if self._judge_1_checkpoint(output_file_name, answer_file_name):
-                correct += 1
+            correct_ckpt, total_ckpt = self._judge_1_checkpoint(
+                output_file_name, answer_file_name
+            )
+            correct += correct_ckpt
+            total += total_ckpt
+            if correct_ckpt != total_ckpt:
+                wrong.append(i)
 
-        return f"{correct} / {self.checkpoints_number}"
+        return f"{correct} / {total} = {correct/total}, wrong: {wrong}"
 
     def judge(self):
         results_file = os.path.join(self.problem_path, f"results.toml")

@@ -1,6 +1,7 @@
 import random
 import math
 from argparse import ArgumentParser
+from typing import Tuple
 
 from problem import Problem
 from utils import re_float_fixed
@@ -47,20 +48,26 @@ class TriangularPrism(Problem):
 
         return res
 
-    def _judge_1_checkpoint(self, output_file_name, answer_file_name) -> bool:
+    def _judge_1_checkpoint(
+        self, output_file_name, answer_file_name
+    ) -> Tuple[int, int]:
         with open(answer_file_name, "r") as f_ans:
             standard_answers = []
-            for line in f_ans.readline():
+            for line in f_ans.readlines():
                 standard_answers.extend(re_float_fixed.findall(line))
 
         with open(output_file_name, "r") as f_out:
             answers = []
-            for line in f_out.readline():
+            for line in f_out.readlines():
                 answers.extend(re_float_fixed.findall(line))
+
+        correct, total = 0, len(standard_answers)
         for standard_answer, answer in zip(standard_answers, answers):
-            if standard_answer != answer:
-                return False
-        return True
+            standard_answer = float(standard_answer)
+            answer = float(answer)
+            if abs(answer - standard_answer) < 1e-6 * abs(standard_answer):
+                correct += 1
+        return correct, total
 
 
 if __name__ == "__main__":
