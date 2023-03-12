@@ -3,10 +3,10 @@ from argparse import ArgumentParser
 from typing import Tuple
 
 from problem import Problem
-from utils import re_float_fixed
+from utils import re_int
 
 
-class Money(Problem):
+class Count(Problem):
     def __init__(
         self,
         assignment_path: str = "Assignment 2",
@@ -19,7 +19,7 @@ class Money(Problem):
     ):
         super().__init__(
             assignment_path,
-            problem_name="money",
+            problem_name="count",
             student_path=student_path,
             checkpoints_number=checkpoints_number,
             generate_checkpoints=generate_checkpoints,
@@ -29,39 +29,20 @@ class Money(Problem):
         )
 
     def _generate_input(self, index) -> str:
-        if index == 0:
-            n = random.randint(1, 5)
-        elif index == 1:
-            n = random.randint(6, 20)
-        elif index == 2:
-            n = random.randint(21, 50)
-        elif index == 3:
-            n = random.randint(51, 300)
-        elif index == 4:
-            n = random.randint(301, 400)
-        else:
-            n = random.randint(1, 400)
-
-        return f"{n}\n"
+        input_content = ""
+        line_number = random.randint(1, 20)
+        for line in range(line_number):
+            input_content += f"{random.randint(-2147483648, 2147483647)}\n"
+        return input_content
 
     def _compute(self, input_content: str) -> str:
-        input_content = input_content.strip()
-        n = int(input_content)
+        input_tokens = input_content.split()
 
-        if 1 <= n <= 5:
-            x = n - 1
-        elif 6 <= n <= 20:
-            x = 4 + 0.4 * (n - 5)
-        elif 21 <= n <= 50:
-            x = 10 + 0.15 * (n - 20)
-        elif 51 <= n <= 300:
-            x = 14.5 + 0.03 * (n - 50)
-        elif n > 300:
-            x = 22
-        else:
-            return "Error\n"
+        count = 0
+        for token in input_tokens:
+            count += token.count("1")
 
-        return f"{n * (1 - x / 100):.3f}\n"
+        return str(count)
 
     def _judge_1_checkpoint(
         self, output_file_name, answer_file_name
@@ -69,18 +50,18 @@ class Money(Problem):
         with open(answer_file_name, "r") as f_ans:
             standard_answers = []
             for line in f_ans.readlines():
-                standard_answers.extend(re_float_fixed.findall(line))
+                standard_answers.extend(re_int.findall(line))
 
         with open(output_file_name, "r") as f_out:
             answers = []
             for line in f_out.readlines():
-                answers.extend(re_float_fixed.findall(line))
+                answers.extend(re_int.findall(line))
 
         correct, total = 0, len(standard_answers)
         for standard_answer, answer in zip(standard_answers, answers):
-            standard_answer = float(standard_answer)
-            answer = float(answer)
-            if abs(answer - standard_answer) < 1e-3 * abs(standard_answer):
+            standard_answer = int(standard_answer)
+            answer = int(answer)
+            if standard_answer == answer:
                 correct += 1
         return correct, total
 
@@ -94,7 +75,7 @@ if __name__ == "__main__":
     parser.add_argument("-j", "--judge", action="store_true")
     args = parser.parse_args()
 
-    money = Money(
+    count = Count(
         student_path=args.student_path,
         generate_checkpoints=args.generate_checkpoints,
         compile=args.compile,

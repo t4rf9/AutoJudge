@@ -36,10 +36,10 @@ class Maximum(Problem):
         c = random.randint(-1000000, 1000000) / 1000
         d = random.randint(-1000000, 1000000) / 1000
         if index == 1:
-            return f"{a} {b} {c} {a}\n"
+            return f"{a:.3f} {b:.3f} {c:.3f} {a:.3f}\n"
         if index == 2:
-            return f"{a} {b} {c} -1000.1\n"
-        return f"{a} {b} {c} {d}\n"
+            return f"{a:.3f} {b:.3f} {c:.3f} -1000.1\n"
+        return f"{a:.3f} {b:.3f} {c:.3f} {d:.3f}\n"
 
     def _compute(self, input_content: str) -> str:
         input_tokens = input_content.split()
@@ -54,7 +54,7 @@ class Maximum(Problem):
         if res > 1000 or min(a, b, c, d) < -1000:
             return "Error:Out of Range"
 
-        return str(res)
+        return f"{res:.3f}"
 
     def _judge_1_checkpoint(
         self, output_file_name, answer_file_name
