@@ -41,7 +41,7 @@ class TriangularPrism(Problem):
         input_tokens = input_content.split()
         a, h = [float(token) for token in input_tokens]
 
-        surface_area = a * h + math.sqrt(3) * a**2 / 2
+        surface_area = 3 * a * h + math.sqrt(3) * a**2 / 2
         volume = math.sqrt(3) * h * a**2 / 4
 
         res = f"{surface_area:.3f} {volume:.3f}\n"
@@ -65,7 +65,7 @@ class TriangularPrism(Problem):
         for standard_answer, answer in zip(standard_answers, answers):
             standard_answer = float(standard_answer)
             answer = float(answer)
-            if abs(answer - standard_answer) < 1e-6 * abs(standard_answer):
+            if abs(answer - standard_answer) < 1e-3 * abs(standard_answer):
                 correct += 1
         return correct, total
 
