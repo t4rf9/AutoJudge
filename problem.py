@@ -59,7 +59,7 @@ class Problem(ABC):
             self.judge()
 
     @abstractmethod
-    def _generate_input(self) -> str:
+    def _generate_input(self, index) -> str:
         pass
 
     @abstractmethod
@@ -68,7 +68,7 @@ class Problem(ABC):
 
     def generate_checkpoints(self):
         for i in range(self.checkpoints_number):
-            input_content = self._generate_input()
+            input_content = self._generate_input(i)
             answer_content = self._compute(input_content)
             with open(os.path.join(self.checkpoints_path, f"{i}.in"), "w") as f_in:
                 f_in.write(input_content)

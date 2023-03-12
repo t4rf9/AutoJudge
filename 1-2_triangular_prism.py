@@ -29,7 +29,7 @@ class TriangularPrism(Problem):
             judge=judge,
         )
 
-    def _generate_input(self) -> str:
+    def _generate_input(self, index) -> str:
         a = random.randint(0, 100000) / 1000
         h = random.randint(0, 100000) / 1000
 
