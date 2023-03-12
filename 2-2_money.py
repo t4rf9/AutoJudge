@@ -3,9 +3,10 @@ from argparse import ArgumentParser
 from typing import Tuple
 
 from problem import Problem
+from utils import re_float_fixed
 
 
-class Maximum(Problem):
+class Money(Problem):
     def __init__(
         self,
         assignment_path: str = "Assignment 2",
@@ -18,7 +19,7 @@ class Maximum(Problem):
     ):
         super().__init__(
             assignment_path,
-            problem_name="maximum",
+            problem_name="money",
             student_path=student_path,
             checkpoints_number=checkpoints_number,
             generate_checkpoints=generate_checkpoints,
@@ -29,32 +30,38 @@ class Maximum(Problem):
 
     def _generate_input(self, index) -> str:
         if index == 0:
-            return "0 0 0 0\n"
+            n = random.randint(1, 5)
+        elif index == 1:
+            n = random.randint(6, 20)
+        elif index == 2:
+            n = random.randint(21, 50)
+        elif index == 3:
+            n = random.randint(51, 300)
+        elif index == 4:
+            n = random.randint(301, 400)
+        else:
+            n = random.randint(1, 400)
 
-        a = random.randint(-1000000, 1000000) / 1000
-        b = random.randint(-1000000, 1000000) / 1000
-        c = random.randint(-1000000, 1000000) / 1000
-        d = random.randint(-1000000, 1000000) / 1000
-        if index == 1:
-            return f"{a} {b} {c} {a}\n"
-        if index == 2:
-            return f"{a} {b} {c} -1000.1\n"
-        return f"{a} {b} {c} {d}\n"
+        return f"{n}\n"
 
     def _compute(self, input_content: str) -> str:
-        input_tokens = input_content.split()
-        a, b, c, d = [float(token) for token in input_tokens]
+        input_content = input_content.strip()
+        n = int(input_content)
 
-        if a == b == c == d == 0:
-            return "Exit"
-        if a == b or a == c or a == d or b == c or b == d or c == d:
-            return "Error:Equal"
+        if 1 <= n <= 5:
+            x = n - 1
+        elif 6 <= n <= 20:
+            x = 4 + 0.4 * (n - 5)
+        elif 21 <= n <= 50:
+            x = 10 + 0.15 * (n - 20)
+        elif 51 <= n <= 300:
+            x = 14.5 + 0.03 * (n - 50)
+        elif n > 300:
+            x = 22
+        else:
+            return "Error\n"
 
-        res = max(a, b, c, d)
-        if res > 1000 or min(a, b, c, d) < -1000:
-            return "Error:Out of Range"
-
-        return str(res)
+        return f"{n * (1-x)}\n"
 
     def _judge_1_checkpoint(
         self, output_file_name, answer_file_name
@@ -62,32 +69,19 @@ class Maximum(Problem):
         with open(answer_file_name, "r") as f_ans:
             standard_answers = []
             for line in f_ans.readlines():
-                line = line.strip()
-                if len(line) > 0:
-                    standard_answers.append(line)
+                standard_answers.extend(re_float_fixed.findall(line))
 
         with open(output_file_name, "r") as f_out:
             answers = []
             for line in f_out.readlines():
-                line = line.strip()
-                if len(line) == 0 or line[0] == "#":
-                    continue
-                answers.append(line)
+                answers.extend(re_float_fixed.findall(line))
 
         correct, total = 0, len(standard_answers)
         for standard_answer, answer in zip(standard_answers, answers):
-            try:
-                standard_answer = float(standard_answer)
-                try:
-                    answer = float(answer)
-                except ValueError:
-                    continue
-                if abs(answer - standard_answer) < 1e-6 * abs(standard_answer):
-                    correct += 1
-            except ValueError:
-                if standard_answer == answer:
-                    correct += 1
-
+            standard_answer = float(standard_answer)
+            answer = float(answer)
+            if abs(answer - standard_answer) < 1e-3 * abs(standard_answer):
+                correct += 1
         return correct, total
 
 
@@ -100,7 +94,7 @@ if __name__ == "__main__":
     parser.add_argument("-j", "--judge", action="store_true")
     args = parser.parse_args()
 
-    maximum = Maximum(
+    money = Money(
         student_path=args.student_path,
         generate_checkpoints=args.generate_checkpoints,
         compile=args.compile,
