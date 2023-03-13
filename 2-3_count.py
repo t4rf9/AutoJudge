@@ -33,7 +33,7 @@ class Count(Problem):
     def _generate_input(self, index) -> str:
         input_content = ""
         for line in range(index + 1):
-            input_content += f"{random.randint(-2147483648, 2147483647)}\n"
+            input_content += f"{random.randint(1, 2147483647)}\n"
         return input_content
 
     def _compute(self, input_content: str) -> str:
@@ -56,6 +56,8 @@ class Count(Problem):
         with open(output_file_name, "r") as f_out:
             answers = []
             for line in f_out.readlines():
+                if len(line) == 0 or line[0] == "#":
+                    continue
                 answers.extend(re_int.findall(line))
 
         correct, total = 0, len(standard_answers)
