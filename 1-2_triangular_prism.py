@@ -1,7 +1,7 @@
 import random
 import math
 from argparse import ArgumentParser
-from typing import Tuple
+from typing import Tuple, List
 
 from problem import Problem
 from utils import re_float_fixed
@@ -12,6 +12,7 @@ class TriangularPrism(Problem):
         self,
         assignment_path: str = "Assignment 1",
         student_path: str = None,
+        excluded_students: List[str] = [],
         checkpoints_number: int = 20,
         generate_checkpoints: bool = True,
         compile: bool = True,
@@ -22,6 +23,7 @@ class TriangularPrism(Problem):
             assignment_path,
             problem_name="2",  # name of source file: 2.cpp
             student_path=student_path,
+            excluded_students=excluded_students,
             checkpoints_number=checkpoints_number,
             generate_checkpoints=generate_checkpoints,
             compile=compile,
@@ -73,6 +75,7 @@ class TriangularPrism(Problem):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("-s", "--student_path", type=str, default=None)
+    parser.add_argument("-e", "--exclude_students", type=str, default=[], nargs="*")
     parser.add_argument("-g", "--generate_checkpoints", action="store_true")
     parser.add_argument("-c", "--compile", action="store_true")
     parser.add_argument("-r", "--run_checkpoints", action="store_true")
@@ -81,6 +84,7 @@ if __name__ == "__main__":
 
     triangular_prism = TriangularPrism(
         student_path=args.student_path,
+        excluded_students=args.exclude_students,
         generate_checkpoints=args.generate_checkpoints,
         compile=args.compile,
         run_checkpoints=args.run_checkpoints,

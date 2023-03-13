@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 import os
 import toml
 from functools import partial
@@ -13,6 +13,7 @@ class Problem(ABC):
         assignment_path: str,
         problem_name: str,
         student_path: str = None,
+        excluded_students: List[str] = [],
         checkpoints_number: int = 20,
         generate_checkpoints: bool = True,
         compile: bool = True,
@@ -43,6 +44,7 @@ class Problem(ABC):
         self.problem_path = os.path.join(self.assignment_path, problem_name)
 
         self.student_path = student_path
+        self.excluded_students = excluded_students
 
         self.checkpoints_path = os.path.join(self.problem_path, "checkpoints")
         os.makedirs(self.checkpoints_path, exist_ok=True)
@@ -76,6 +78,10 @@ class Problem(ABC):
                 f_ans.write(answer_content)
 
     def _compile_for_1_student(self, student_path: str):
+        student = student_path.split("/")[-1]
+        if student in self.excluded_students:
+            return
+
         file_names = os.listdir(student_path)
         if f"{self.problem_name}.c" in file_names:
             compiler = "gcc"
@@ -112,8 +118,11 @@ class Problem(ABC):
             self._compile_for_1_student(self.student_path)
 
     def _run_checkpoints_for_1_student(self, student_path: str):
-        executable_file_name = os.path.join(student_path, self.problem_name)
         student = student_path.split("/")[-1]
+        if student in self.excluded_students:
+            return
+
+        executable_file_name = os.path.join(student_path, self.problem_name)
         output_path = os.path.join(self.problem_path, os.path.join("outputs", student))
         os.makedirs(output_path, exist_ok=True)
 
@@ -142,6 +151,8 @@ class Problem(ABC):
 
     def _judge_1_student(self, student_path: str) -> Tuple[int, int]:
         student = student_path.split("/")[-1]
+        if student in self.excluded_students:
+            return "N/A"
         output_path = os.path.join(self.problem_path, os.path.join("outputs", student))
         os.makedirs(output_path, exist_ok=True)
 
