@@ -10,7 +10,10 @@ def switch_encoding(file_path):
         lines_bytes = f.readlines()
 
     lines_bytes = [
-        line_bytes.expandtabs(4).replace(b"\r\n", b"\n").replace(b"scanf_s", b"scanf")
+        line_bytes.expandtabs(4)
+        .replace(b"\r\n", b"\n")
+        .replace(b"scanf_s", b"scanf")
+        .replace(b"printf_s", b"printf")
         for line_bytes in lines_bytes
     ]
 
