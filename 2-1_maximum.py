@@ -43,21 +43,29 @@ class Maximum(Problem):
         if index == 3:
             return f"{a:.3f} {b:.3f} {c:.3f} {a:.3f}\n"
         if index == 4:
-            return f"-1000.1 {a:.3f} {b:.3f} {c:.3f}\n"
+            return f"{a:.3f} {b:.3f} {b:.3f} {d:.3f}\n"
         if index == 5:
-            return f"{a:.3f} -1000.1 {b:.3f} {c:.3f}\n"
+            return f"{a:.3f} {b:.3f} {c:.3f} {b:.3f}\n"
         if index == 6:
-            return f"{a:.3f} {b:.3f} -1000.1 {c:.3f}\n"
+            return f"{a:.3f} {b:.3f} {c:.3f} {c:.3f}\n"
         if index == 7:
-            return f"{a:.3f} {b:.3f} {c:.3f} -1000.1\n"
+            return f"-1000.1 {a:.3f} {b:.3f} {c:.3f}\n"
         if index == 8:
-            return f"1000.1 {a:.3f} {b:.3f} {c:.3f}\n"
+            return f"{a:.3f} -1000.1 {b:.3f} {c:.3f}\n"
         if index == 9:
-            return f"{a:.3f} 1000.1 {b:.3f} {c:.3f}\n"
+            return f"{a:.3f} {b:.3f} -1000.1 {c:.3f}\n"
         if index == 10:
-            return f"{a:.3f} {b:.3f} 1000.1 {c:.3f}\n"
+            return f"{a:.3f} {b:.3f} {c:.3f} -1000.1\n"
         if index == 11:
+            return f"1000.1 {a:.3f} {b:.3f} {c:.3f}\n"
+        if index == 12:
+            return f"{a:.3f} 1000.1 {b:.3f} {c:.3f}\n"
+        if index == 13:
+            return f"{a:.3f} {b:.3f} 1000.1 {c:.3f}\n"
+        if index == 14:
             return f"{a:.3f} {b:.3f} {c:.3f} 1000.1\n"
+        if index == 15:
+            return f"{a:.3f} 1000.1 {c:.3f} 1000.1\n"
         return f"{a:.3f} {b:.3f} {c:.3f} {d:.3f}\n"
 
     def _compute(self, input_content: str) -> str:
@@ -81,14 +89,14 @@ class Maximum(Problem):
         correct, total = 0, 1
 
         with open(answer_file_name, "r") as f_ans:
-            standard_answer = f_ans.readline().strip()
+            standard_answer = f_ans.readline().strip().replace(" ", "").lower()
         with open(output_file_name, "r") as f_out:
             answer_lines = []
             for line in f_out.readlines():
                 line = line.strip()
                 if len(line) == 0 or line[0] == "#":
                     continue
-                answer_lines.append(line)
+                answer_lines.append(line.replace(" ", "").lower())
         try:
             standard_answer = float(standard_answer)
             for line in answer_lines:
