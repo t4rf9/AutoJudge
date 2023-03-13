@@ -29,18 +29,16 @@ class Money(Problem):
         )
 
     def _generate_input(self, index) -> str:
-        if index == 0:
+        if index % 5 == 0:
             n = random.randint(1, 5)
-        elif index == 1:
+        elif index % 5 == 1:
             n = random.randint(6, 20)
-        elif index == 2:
+        elif index % 5 == 2:
             n = random.randint(21, 50)
-        elif index == 3:
+        elif index % 5 == 3:
             n = random.randint(51, 300)
-        elif index == 4:
-            n = random.randint(301, 400)
         else:
-            n = random.randint(1, 400)
+            n = random.randint(301, 400)
 
         return f"{n}\n"
 
@@ -61,7 +59,7 @@ class Money(Problem):
         else:
             return "Error\n"
 
-        return f"{n * (1 - x / 100):.3f}\n"
+        return f"{10 * n * (1 - x / 100):.3f}\n"
 
     def _judge_1_checkpoint(
         self, output_file_name, answer_file_name
