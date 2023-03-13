@@ -20,6 +20,5 @@ for z in $(ls "$assignment_path" | grep .7z); do
     7zz e "$assignment_path/$z" "-o$assignment_path/$output_path" -aou;
     rm "$assignment_path/$z";
 done
-rm $(ls -a "$assignment_path"/*/* | grep -v -e ".cpp$" -e ".c$")
-rm "$assignment_path"/*/.*
-python switch_encoding.py "$assignment_path"
+ls -a "$assignment_path"/*/* | grep -v -e "\.cpp$" -e "\.c$" | sed "s/^/\"/;s/$/\"/" | xargs -n1 rm
+ls -a "$assignment_path"/*/.* | grep -v -e "\.$" | sed "s/^/\"/;s/$/\"/" | xargs -n1 rm
