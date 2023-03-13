@@ -30,8 +30,7 @@ class Count(Problem):
 
     def _generate_input(self, index) -> str:
         input_content = ""
-        line_number = random.randint(1, 20)
-        for line in range(line_number):
+        for line in range(index + 1):
             input_content += f"{random.randint(-2147483648, 2147483647)}\n"
         return input_content
 
