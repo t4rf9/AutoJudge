@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 from typing import Tuple
 
 from problem import Problem
+from utils import re_float_fixed
 
 
 class Maximum(Problem):
@@ -36,9 +37,27 @@ class Maximum(Problem):
         c = random.randint(-1000000, 1000000) / 1000
         d = random.randint(-1000000, 1000000) / 1000
         if index == 1:
-            return f"{a:.3f} {b:.3f} {c:.3f} {a:.3f}\n"
+            return f"{a:.3f} {a:.3f} {c:.3f} {d:.3f}\n"
         if index == 2:
+            return f"{a:.3f} {b:.3f} {a:.3f} {d:.3f}\n"
+        if index == 3:
+            return f"{a:.3f} {b:.3f} {c:.3f} {a:.3f}\n"
+        if index == 4:
+            return f"-1000.1 {a:.3f} {b:.3f} {c:.3f}\n"
+        if index == 5:
+            return f"{a:.3f} -1000.1 {b:.3f} {c:.3f}\n"
+        if index == 6:
+            return f"{a:.3f} {b:.3f} -1000.1 {c:.3f}\n"
+        if index == 7:
             return f"{a:.3f} {b:.3f} {c:.3f} -1000.1\n"
+        if index == 8:
+            return f"1000.1 {a:.3f} {b:.3f} {c:.3f}\n"
+        if index == 9:
+            return f"{a:.3f} 1000.1 {b:.3f} {c:.3f}\n"
+        if index == 10:
+            return f"{a:.3f} {b:.3f} 1000.1 {c:.3f}\n"
+        if index == 11:
+            return f"{a:.3f} {b:.3f} {c:.3f} 1000.1\n"
         return f"{a:.3f} {b:.3f} {c:.3f} {d:.3f}\n"
 
     def _compute(self, input_content: str) -> str:
@@ -59,35 +78,33 @@ class Maximum(Problem):
     def _judge_1_checkpoint(
         self, output_file_name, answer_file_name
     ) -> Tuple[int, int]:
-        with open(answer_file_name, "r") as f_ans:
-            standard_answers = []
-            for line in f_ans.readlines():
-                line = line.strip()
-                if len(line) > 0:
-                    standard_answers.append(line)
+        correct, total = 0, 1
 
+        with open(answer_file_name, "r") as f_ans:
+            standard_answer = f_ans.readline().strip()
         with open(output_file_name, "r") as f_out:
-            answers = []
+            answer_lines = []
             for line in f_out.readlines():
                 line = line.strip()
                 if len(line) == 0 or line[0] == "#":
                     continue
-                answers.append(line)
-
-        correct, total = 0, len(standard_answers)
-        for standard_answer, answer in zip(standard_answers, answers):
-            try:
-                standard_answer = float(standard_answer)
-                try:
-                    answer = float(answer)
-                except ValueError:
-                    continue
-                if abs(answer - standard_answer) < 1e-6 * abs(standard_answer):
+                answer_lines.append(line)
+        try:
+            standard_answer = float(standard_answer)
+            for line in answer_lines:
+                match = re_float_fixed.search(line)
+                if (
+                    match is not None
+                    and abs((float(match[0]) - standard_answer) / standard_answer)
+                    < 1e-6
+                ):
                     correct += 1
-            except ValueError:
-                if standard_answer == answer:
+                    break
+        except ValueError:
+            for line in answer_lines:
+                if line.find(standard_answer) != -1:
                     correct += 1
-
+                    break
         return correct, total
 
 
