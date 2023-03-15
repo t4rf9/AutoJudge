@@ -2,7 +2,7 @@
 
 This is a utility for judging homework assignments of the Tsinghua course Programming Fundamentals.
 
-`extract.sh` helps decompress received zip files and invokes `switch_encoding.py` to ensure all files are in UTF-8.
+`extract.sh` helps decompress received zip files.
 
 `utils.py` works like a toolbox.
 
