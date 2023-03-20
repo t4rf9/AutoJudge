@@ -182,5 +182,7 @@ class Problem(ABC):
                 results = toml.load(f)
             results[self.student_path.split("/")[-1]] = result_1_student
 
+        results_ordered = dict(sorted(results.items()))
+
         with open(results_file, "w") as f:
-            toml.dump(results, f)
+            toml.dump(results_ordered, f)
