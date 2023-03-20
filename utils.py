@@ -33,9 +33,9 @@ def for_each_student(assignment_path: str, f) -> Dict[str, Tuple[int, int]]:
     res = {}
     executor = ProcessPoolExecutor()
     for student in students:
-        if student[:2] != "20":
-            continue
         student_path = os.path.join(assignment_path, student)
+        if student[:2] != "20" or not os.path.isdir(student_path):
+            continue
 
         future = executor.submit(f, student_path)
 
