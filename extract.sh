@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/zsh
 file="$1"
 if [[ "$(echo "$file" | cut -f 2 -d '.')" != zip ]]; then
     exit
