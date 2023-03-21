@@ -1,5 +1,6 @@
 from typing import Dict, Tuple, List
 import os
+import subprocess
 import toml
 from functools import partial
 from abc import abstractmethod, ABC
@@ -101,11 +102,20 @@ class Problem(ABC):
         switch_encoding(file_name)
 
         # compile
-        compile_command = f'{compiler} -O2 -Wmain-return-type --std={std} -o "{executable_file_name}" "{file_name}"'
-        res = os.system(compile_command)
-        if res != 0:
+        compile_args = [
+            f"{compiler}",
+            "-O2",
+            "-Wmain-return-type",
+            f"--std={std}",
+            "-o",
+            executable_file_name,
+            file_name,
+        ]
+        compile_process = subprocess.run(compile_args)
+        if compile_process.returncode != 0:
+            compile_command = " ".join(compile_process.args)
             raise RuntimeError(
-                f"Compile failure: {compile_command}, return value: {res}"
+                f"Compile failure: {compile_command}, return code: {compile_process.returncode}"
             )
 
     def compile(self):
@@ -129,13 +139,28 @@ class Problem(ABC):
         for i in range(self.checkpoints_number):
             input_file_name = os.path.join(self.checkpoints_path, f"{i}.in")
             output_file_name = os.path.join(output_path, f"{i}.out")
-            command = (
-                f'"{executable_file_name}" < "{input_file_name}" > "{output_file_name}"'
-            )
-            res = os.system(command)
-            if res != 0:
-                print(f"Execution of {command} returns {res}")
-                # raise RuntimeError(f"Execution failure: {command}, return value: {res}")
+
+            input_file = open(input_file_name)
+            output_file = open(output_file_name, "w")
+            try:
+                execution_process = subprocess.run(
+                    executable_file_name,
+                    stdin=input_file,
+                    stdout=output_file,
+                    timeout=0.5,
+                )
+            except subprocess.TimeoutExpired:
+                print(
+                    f'Timeout:    "{executable_file_name}" with input "{input_file_name}"'
+                )
+            else:
+                if execution_process.returncode != 0:
+                    print(
+                        f'Execution of "{execution_process.args}" with input "{input_file_name}" returns {execution_process.returncode}'
+                    )
+
+            input_file.close()
+            output_file.close()
 
     def run_checkpoints(self):
         if self.student_path is None:
