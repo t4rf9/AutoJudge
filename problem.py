@@ -1,6 +1,7 @@
 from typing import Dict, Tuple, List
 import os
 import subprocess
+import math
 import toml
 from functools import partial
 from abc import abstractmethod, ABC
@@ -195,7 +196,7 @@ class Problem(ABC):
             if correct_ckpt != total_ckpt:
                 wrong.append(i)
 
-        return f"{correct} / {total} = {correct/total}, wrong: {wrong}"
+        return f"{correct} / {total} = {math.ceil(correct/total * 100)}, wrong: {wrong}"
 
     def judge(self):
         results_file = os.path.join(self.problem_path, f"results.toml")
