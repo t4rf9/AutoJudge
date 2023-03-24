@@ -21,6 +21,7 @@ class Problem(ABC):
         compile: bool = True,
         run_checkpoints: bool = True,
         judge: bool = True,
+        checkpoint_timeout: float = 1,
     ) -> None:
         """
         File System Structure
@@ -58,6 +59,7 @@ class Problem(ABC):
         if compile:
             self.compile()
         if run_checkpoints:
+            self.checkpoint_timeout = checkpoint_timeout
             self.run_checkpoints()
         if judge:
             self.judge()
@@ -148,7 +150,7 @@ class Problem(ABC):
                     executable_file_name,
                     stdin=input_file,
                     stdout=output_file,
-                    timeout=0.5,
+                    timeout=self.checkpoint_timeout,
                 )
             except subprocess.TimeoutExpired:
                 print(

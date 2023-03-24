@@ -33,6 +33,7 @@ class Count(Problem):
         compile: bool = True,
         run_checkpoints: bool = True,
         judge: bool = True,
+        checkpoint_timeout: float = 60,
     ):
         super().__init__(
             assignment_path,
@@ -44,6 +45,7 @@ class Count(Problem):
             compile=compile,
             run_checkpoints=run_checkpoints,
             judge=judge,
+            checkpoint_timeout=checkpoint_timeout,
         )
 
     def _generate_input(self, index) -> str:
