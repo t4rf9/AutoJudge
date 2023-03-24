@@ -28,7 +28,7 @@ class Count(Problem):
         assignment_path: str = "Assignment 4",
         student_path: str = None,
         excluded_students: List[str] = [],
-        checkpoints_number: int = 14,
+        checkpoints_number: int = 15,
         generate_checkpoints: bool = True,
         compile: bool = True,
         run_checkpoints: bool = True,
