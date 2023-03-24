@@ -1,9 +1,25 @@
-import random
 from argparse import ArgumentParser
 from typing import Tuple, List
 
 from problem import Problem
 from utils import re_int
+
+
+def f(n, m, grid=None, next_number=1):
+    if grid is None:
+        grid = [[0 for j in range(m)] for i in range(n)]
+    res = 0
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 0:
+                if (i == 0 or grid[i - 1][j] > 0) and (j == 0 or grid[i][j - 1] > 0):
+                    grid[i][j] = next_number
+                    if next_number < n * m:
+                        res += f(n, m, grid, next_number + 1)
+                    else:
+                        res += 1
+                    grid[i][j] = 0
+    return res
 
 
 class Count(Problem):
@@ -12,7 +28,7 @@ class Count(Problem):
         assignment_path: str = "Assignment 4",
         student_path: str = None,
         excluded_students: List[str] = [],
-        checkpoints_number: int = 16,
+        checkpoints_number: int = 14,
         generate_checkpoints: bool = True,
         compile: bool = True,
         run_checkpoints: bool = True,
@@ -38,9 +54,7 @@ class Count(Problem):
         n, m = input_content.split()
         n, m = int(n.strip()), int(m.strip())
 
-        res = 0
-        
-        # TODO algorithm
+        res = f(n, m)
 
         return f"{res}"
 
