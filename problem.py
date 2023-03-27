@@ -132,10 +132,12 @@ class Problem(ABC):
 
     def _run_checkpoints_for_1_student(self, student_path: str):
         student = student_path.split("/")[-1]
-        if student in self.excluded_students:
+        executable_file_name = os.path.join(student_path, self.problem_name)
+        if student in self.excluded_students or not os.path.exists(
+            executable_file_name
+        ):
             return
 
-        executable_file_name = os.path.join(student_path, self.problem_name)
         output_path = os.path.join(self.problem_path, os.path.join("outputs", student))
         os.makedirs(output_path, exist_ok=True)
 
@@ -179,10 +181,10 @@ class Problem(ABC):
 
     def _judge_1_student(self, student_path: str) -> Tuple[int, int]:
         student = student_path.split("/")[-1]
-        if student in self.excluded_students:
-            return "N/A"
         output_path = os.path.join(self.problem_path, os.path.join("outputs", student))
-        os.makedirs(output_path, exist_ok=True)
+
+        if student in self.excluded_students or not os.path.exists(output_path):
+            return "N/A"
 
         correct, total = 0, 0
         wrong = []
