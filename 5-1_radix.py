@@ -16,7 +16,7 @@ class Radix(Problem):
         compile: bool = True,
         run_checkpoints: bool = True,
         judge: bool = True,
-        checkpoint_timeout: float = 60,
+        checkpoint_timeout: float = 2,
     ):
         super().__init__(
             assignment_path,
