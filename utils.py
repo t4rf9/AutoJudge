@@ -15,6 +15,8 @@ def switch_encoding(file_path):
         .replace(b"scanf_s", b"scanf")
         .replace(b"printf_s", b"printf")
         .replace(b"gets_s", b"gets")
+        .replace(b"strcpy_s", b"strcpy")
+        .replace(b"strncpy_s", b"strncpy")
         for line_bytes in lines_bytes
     ]
 
