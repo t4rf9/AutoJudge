@@ -57,11 +57,11 @@ class Array(Problem):
 
     def _generate_input(self, index) -> str:
         if index == 0:
-            res = 0
-        elif index == 1:
             res = 1
-        elif index == 2:
+        elif index == 1:
             res = 2
+        elif index == 2:
+            res = 3
         else:
             res = random.randint(2 ** (index - 1), 2**index)
         return f"{res}\n"
