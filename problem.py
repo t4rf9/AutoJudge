@@ -1,5 +1,6 @@
 from typing import Dict, Tuple, List
 import os
+import shutil
 import subprocess
 import math
 import toml
@@ -50,11 +51,13 @@ class Problem(ABC):
         self.excluded_students = excluded_students
 
         self.checkpoints_path = os.path.join(self.problem_path, "checkpoints")
-        os.makedirs(self.checkpoints_path, exist_ok=True)
 
         self.checkpoints_number = checkpoints_number
 
         if generate_checkpoints:
+            if os.path.exists(self.checkpoints_path):
+                shutil.rmtree(self.checkpoints_path)
+            os.makedirs(self.checkpoints_path)
             self.generate_checkpoints()
         if compile:
             self.compile()
