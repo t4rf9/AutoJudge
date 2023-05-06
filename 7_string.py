@@ -1,10 +1,8 @@
 from argparse import ArgumentParser
 from typing import Tuple, List
 import random
-import string
 
 from problem import Problem
-from utils import re_int
 
 
 class String(Problem):
