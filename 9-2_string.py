@@ -2,13 +2,12 @@ from argparse import ArgumentParser
 from typing import Tuple, List
 import random
 import string
-from datetime import date, timedelta
 
 from problem import Problem
 from utils import re_int
 
 
-class Date(Problem):
+class String(Problem):
     def __init__(
         self,
         assignment_path: str = "Assignment 9",
@@ -23,7 +22,7 @@ class Date(Problem):
     ):
         super().__init__(
             assignment_path,
-            problem_name="date",
+            problem_name="string",
             student_path=student_path,
             excluded_students=excluded_students,
             checkpoints_number=checkpoints_number,
@@ -37,31 +36,70 @@ class Date(Problem):
     def _generate_input(self, index) -> str:
         if index == 0:
             return "2021 10 31\n2021 11 1\n"
-
-        date_start = date.fromisocalendar(2000, 1, 1)
-        total_days = (date.today() - date_start).days
-
-        delta_days_0 = random.randint(0, total_days)
-        delta_0 = timedelta(days=delta_days_0)
-
-        if index == 1:
-            delta_1 = timedelta(0)
         else:
-            delta_1 = timedelta(days=random.randint(0, total_days - delta_days_0))
+            length_0 = index * 5
+            letters_0 = random.randint(0, length_0)
+            digits_0 = random.randint(0, length_0 - letters_0)
+            space_0 = length_0 - letters_0 - digits_0
 
-        date_0 = date_start + delta_0
-        date_1 = date_0 + delta_1
+            length_1 = length_0 + (
+                random.randint(-length_0 + 1, length_0 - 1) if index % 2 == 0 else 0
+            )
+            letters_1 = letters_0 + (
+                random.randint(-letters_0, length_1 - letters_0) if index % 4 < 2 else 0
+            )
+            digits_1 = digits_0 + (
+                random.randint(-digits_0, length_1 - letters_1 - digits_0)
+                if index % 8 < 4
+                else 0
+            )
+            space_1 = length_1 - letters_1 - digits_1
 
-        return f"{date_0.strftime('%Y %m %d')}\n{date_1.strftime('%Y %m %d')}\n"
+            letters_0 = random.choices(string.ascii_letters, k=letters_0)
+            letters_1 = random.choices(string.ascii_letters, k=letters_1)
+            digits_0 = random.choices(string.digits, k=digits_0)
+            digits_1 = random.choices(string.digits, k=digits_1)
+            space_0 = [" "] * space_0
+            space_1 = [" "] * space_1
+
+            str_0 = letters_0 + digits_0 + space_0
+            str_1 = letters_1 + digits_1 + space_1
+
+            random.shuffle(str_0)
+            random.shuffle(str_1)
+
+            str_0 = "".join(str_0)
+            str_1 = "".join(str_1)
+
+            return str_0 + "\n" + str_1 + "\n"
 
     def _compute(self, input_content: str) -> str:
-        year_0, month_0, day_0, year_1, month_1, day_1 = (
-            int(i) for i in input_content.split()
-        )
-        date_0 = date(year=year_0, month=month_0, day=day_0)
-        date_1 = date(year=year_1, month=month_1, day=day_1)
+        line_0, line_1 = input_content.splitlines()
 
-        return str((date_1 - date_0).days) + "\n"
+        length_0, length_1 = len(line_0), len(line_1)
+        space_0 = line_0.count(" ")
+        space_1 = line_1.count(" ")
+
+        letters_0, letters_1 = 0, 0
+        digits_0, digits_1 = 0, 0
+
+        for c in line_0:
+            if c.isalpha():
+                letters_0 += 1
+            elif c.isdigit():
+                digits_0 += 1
+        for c in line_1:
+            if c.isalpha():
+                letters_1 += 1
+            elif c.isdigit():
+                digits_1 += 1
+
+        length = 1 if length_0 == length_1 else 0
+        space = 1 if space_0 == space_1 else 0
+        letters = 1 if letters_0 == letters_1 else 0
+        digits = 1 if digits_0 == digits_1 else 0
+
+        return f"{length} {space} {letters} {digits}\n"
 
     def _judge_1_checkpoint(
         self, output_file_name, answer_file_name
@@ -105,7 +143,7 @@ if __name__ == "__main__":
 
     random.seed(203)
 
-    Date(
+    String(
         student_path=args.student_path,
         excluded_students=args.exclude_students,
         generate_checkpoints=args.generate_checkpoints,
